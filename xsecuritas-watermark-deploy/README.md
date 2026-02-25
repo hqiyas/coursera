@@ -12,6 +12,44 @@ This package is prepared for Windows 10/11 domain-joined devices and AD/GPO depl
   Runs at user logon, checks AD group membership, and starts overlay only for targeted users.
 - `scripts/Uninstall-XSecuritasWatermark.ps1`  
   Removes autostart and local package files.
+- `packaging/xsecuritas-watermark-bootstrap.wxs`  
+  WiX source to build a single deployable MSI bootstrap package.
+- `packaging/build-msi.sh`  
+  Linux build script that compiles the MSI using `wixl`.
+
+## Build a single MSI (from this repo)
+
+Run:
+
+```bash
+chmod +x ./packaging/build-msi.sh
+./packaging/build-msi.sh
+```
+
+Output:
+
+- `../dist/xsecuritas-watermark-bootstrap.msi`
+
+The MSI installs:
+
+- `C:\ProgramData\xSecuritas\Watermark\watermark.json`
+- `C:\ProgramData\xSecuritas\Watermark\Start-XSecuritasWatermark.ps1`
+- `C:\ProgramData\xSecuritas\Watermark\Uninstall-XSecuritasWatermark.ps1`
+- `HKLM\Software\Microsoft\Windows\CurrentVersion\Run\xSecuritasWatermark`
+
+Install command (silent):
+
+```powershell
+msiexec /i xsecuritas-watermark-bootstrap.msi /qn TARGETGROUP="CONTOSO\GG_XSecuritas_Watermark_Users"
+```
+
+Optional property override for a non-default agent path:
+
+```powershell
+msiexec /i xsecuritas-watermark-bootstrap.msi /qn TARGETGROUP="CONTOSO\GG_XSecuritas_Watermark_Users" AGENTEXEPATH="D:\Apps\xSecuritas\Agent\xsecuritas-watermark.exe"
+```
+
+Note: This MSI deploys watermark configuration and logon autostart. It assumes the xSecuritas agent binary is installed separately (machine GPO/software deployment).
 
 ## Quick install (single endpoint)
 

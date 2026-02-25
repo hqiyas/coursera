@@ -1,0 +1,41 @@
+{
+  "enabled": true,
+  "target": {
+    "allMonitors": true,
+    "perMonitorDpiAware": true
+  },
+  "watermark": {
+    "mode": "tiled_text",
+    "angleDegrees": 35,
+    "tileSpacingX": 280,
+    "tileSpacingY": 180,
+    "textTemplate": "{DOMAIN}\\{USERNAME}   {COMPUTERNAME}   {IPV4}   {DATETIME:yyyy-MM-dd HH:mm}",
+    "refreshSeconds": 60
+  },
+  "appearance": {
+    "backgroundColor": "#00000000",
+    "textColor": "#40444444",
+    "fontFamily": "Segoe UI",
+    "fontSizePt": 20,
+    "fontWeight": 600
+  },
+  "interaction": {
+    "clickThrough": true,
+    "keyboardPassthrough": true,
+    "hitTestMode": "transparent",
+    "noActivate": true,
+    "showInTaskbar": false,
+    "showInAltTab": false,
+    "topMost": true
+  },
+  "performance": {
+    "redrawOnChangeOnly": true,
+    "maxFps": 1,
+    "gpuAcceleration": true
+  },
+  "resilience": {
+    "singleInstancePerSession": true,
+    "restartOnCrash": true,
+    "restartDelaySeconds": 3
+  }
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product
+    Id="*"
+    Name="xSecuritas Watermark Bootstrap"
+    Language="1033"
+    Version="1.0.0"
+    Manufacturer="Enterprise IT"
+    UpgradeCode="{D2D3068D-7E9E-437C-A89D-3D27CB20A425}">
+    <Package
+      Description="Deploys xSecuritas watermark configuration and autostart"
+      InstallerVersion="500"
+      Compressed="yes"
+      InstallScope="perMachine" />
+    <Media Id="1" Cabinet="xsecuritas-watermark.cab" EmbedCab="yes" />
+
+    <Property Id="TARGETGROUP" Value="CONTOSO\GG_XSecuritas_Watermark_Users" />
+    <Property Id="AGENTEXEPATH" Value="C:\Program Files\xSecuritas\Agent\xsecuritas-watermark.exe" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="DIR_XSECURITAS" Name="xSecuritas">
+          <Directory Id="DIR_WATERMARK" Name="Watermark">
+            <Component Id="CmpWatermarkConfig" Guid="{E2DCA1A9-AE3F-432A-9978-9FBE8FF42D14}">
+              <File Id="FileWatermarkJson" Source="../config/watermark.json" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CmpStartScript" Guid="{145F7C12-E5F4-4F30-A9B9-E4EA47E7CC1D}">
+              <File Id="FileStartPs1" Source="../scripts/Start-XSecuritasWatermark.ps1" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CmpUninstallScript" Guid="{4F0D2E84-4127-4505-8F43-8BF2C7DDDA03}">
+              <File Id="FileUninstallPs1" Source="../scripts/Uninstall-XSecuritasWatermark.ps1" KeyPath="yes" />
+            </Component>
+
+            <Component Id="CmpRunRegistry" Guid="{83B445D0-3C3D-430A-AF6A-7FB6D5424C8D}">
+              <RegistryValue
+                Root="HKLM"
+                Key="Software\Microsoft\Windows\CurrentVersion\Run"
+                Name="xSecuritasWatermark"
+                Type="string"
+                Value="powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File &quot;C:\ProgramData\xSecuritas\Watermark\Start-XSecuritasWatermark.ps1&quot; -TargetGroup &quot;[TARGETGROUP]&quot; -AgentExecutablePath &quot;[AGENTEXEPATH]&quot; -ConfigPath &quot;C:\ProgramData\xSecuritas\Watermark\watermark.json&quot;"
+                KeyPath="yes" />
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id="MainFeature" Title="xSecuritas Watermark Deployment" Level="1">
+      <ComponentRef Id="CmpWatermarkConfig" />
+      <ComponentRef Id="CmpStartScript" />
+      <ComponentRef Id="CmpUninstallScript" />
+      <ComponentRef Id="CmpRunRegistry" />
+    </Feature>
+  </Product>
+</Wix>
